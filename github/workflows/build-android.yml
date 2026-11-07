@@ -1,34 +1,24 @@
-
-name: Build TapDog APK
+name: Build Android APK
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
+  build-android:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Get project files
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: Build APK with Buildozer
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
         with:
-          python-version: '3.11'
+          workdir: .
+          buildozer_version: stable
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip python3-venv autoconf libtool pkg-config zlib1g-dev libncurses5-dev libffi-dev libssl-dev cmake
-
-      - name: Install Buildozer
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install buildozer Cython==0.29.33
-
-      - name: Build APK
-        run: buildozer android debug
-
-      - name: Upload APK
+      - name: Save APK for download
         uses: actions/upload-artifact@v4
         with:
           name: TapDog-APK
-          path: bin/*.apk
+          path: ${{ steps.buildozer.outputs.filename }}
