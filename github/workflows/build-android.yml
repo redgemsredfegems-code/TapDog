@@ -1,5 +1,4 @@
 name: Build TapDog APK
-
 on:
   workflow_dispatch:
 
@@ -13,18 +12,15 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: |
+      - run: |
           sudo apt-get update
           sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip python3-venv autoconf libtool pkg-config zlib1g-dev libncurses5-dev libffi-dev libssl-dev cmake
 
-      - name: Install Buildozer
-        run: |
+      - run: |
           python -m pip install --upgrade pip
           python -m pip install buildozer Cython==0.29.33
 
-      - name: Build APK
-        run: buildozer android debug
+      - run: buildozer android debug
 
       - uses: actions/upload-artifact@v4
         with:
